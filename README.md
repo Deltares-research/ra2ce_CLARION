@@ -16,6 +16,21 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Deltares/ra2ce/jupyter-binder)
 
 
+## Merge a branch from origin RA2CE repo to thei forked repo
+Clone the fork
+git clone https://github.com/Deltares-research/ra2ce_CLARION.git
+cd ra2ce_CLARION
+
+Add the source repo as a remote
+git remote add upstream https://github.com/Deltares/ra2ce.git
+
+Fetch the branch
+git fetch upstream 806-bughazard-overlay-with-a-csv-table
+
+Push the branch to forked repo
+git push origin FETCH_HEAD:refs/heads/806-bughazard-overlay-with-a-csv-table
+
+
 This is the repository of RA2CE (*just say race!*) - the Resilience Assessment and Adaptation for Critical infrastructurE Toolkit Python Package developed by Deltares. RA2CE helps to quantify resilience of critical infrastructure networks, prioritize interventions and adaptation measures and select the most appropriate action perspective to increase resilience considering future conditions.
 
 **Contact** Margreet van Marle (Margreet.vanMarle@Deltares.nl)
