@@ -1092,7 +1092,7 @@ def add_x_y_to_nodes(graph: nx.Graph) -> nx.Graph:
     Returns:
         nx.Graph: Graph with x and y attributes added
     """
-    for _, data in graph.nodes(data=True):
+    for node_id, data in graph.nodes(data=True):
         if "x" not in data or "y" not in data:
             geometry = data.get("geometry", None)
             if geometry is not None and hasattr(geometry, "x"):
@@ -1101,6 +1101,8 @@ def add_x_y_to_nodes(graph: nx.Graph) -> nx.Graph:
             else:
                 data.setdefault("x", 0.0)
                 data.setdefault("y", 0.0)
+        data.setdefault("node_fid", node_id)
+
     return graph
 
 
@@ -1124,7 +1126,7 @@ def graph_from_gdf(
     for _, row in gdf.iterrows():
         dict_row = row.to_dict()
         _created_graph.add_edge(
-            u_for_edge=dict_row["node_A"], v_for_edge=dict_row["node_B"], **dict_row
+            u_for_edge=dict_row["FromNodeID"], v_for_edge=dict_row["ToNodeID"], **dict_row
         )
 
     # make a name

@@ -48,7 +48,7 @@ class HazardIntersectBuilderForTable(HazardIntersectBuilderBase):
 
         # node_A/node_B may be stored as lists (e.g. in simplified/merged graphs);
         # graph_from_gdf requires hashable scalars as node identifiers.
-        for _col in ["node_A", "node_B"]:
+        for _col in ["FromNodeID", "ToNodeID"]:
             if _col in gdf.columns:
                 gdf[_col] = gdf[_col].apply(
                     lambda x: x[0] if isinstance(x, list) else x
