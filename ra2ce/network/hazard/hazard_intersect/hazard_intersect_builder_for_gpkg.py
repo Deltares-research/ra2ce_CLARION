@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023-2026 Stichting Deltares
+    Copyright (C) 2023 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -101,9 +101,10 @@ class HazardIntersectBuilderForGpkg(HazardIntersectBuilderBase):
         """
         gdf_crs_original = hazard_overlay.crs
 
-        def geodataframe_overlay(hazard_shp_file: Path, ra2ce_name: str):
-            gdf_hazard = read_file(str(hazard_shp_file))
-
+        for ra2ce_name, hazard_gpkg_file in zip(
+            self.ra2ce_names, self.hazard_gpkg_files
+        ):
+            gdf_hazard = read_file(str(hazard_gpkg_file))
             if hazard_overlay.crs != gdf_hazard.crs:
                 hazard_overlay = hazard_overlay.to_crs(gdf_hazard.crs)
 
@@ -111,17 +112,21 @@ class HazardIntersectBuilderForGpkg(HazardIntersectBuilderBase):
                 hazard_overlay,
                 gdf_hazard[[self.hazard_field_name, "geometry"]],
                 how="left",
-            )
-            hazard_overlay.rename(
-                columns={
-                    self.hazard_field_name: ra2ce_name
-                    + "_"
-                    + self.hazard_aggregate_wl[:2]
-                },
-                inplace=True,
+                predicate="intersects",
             )
 
-        self._overlay_hazard_files(geodataframe_overlay)
+            # Deduplicate while preserving GeoDataFrame structure
+            hazard_overlay = (
+                hazard_overlay
+                .sort_values(self.hazard_field_name, ascending=False)  # highest hazard first
+                .drop_duplicates(subset="rfid_c", keep="first")
+            )
+
+
+            # hazard_overlay[ra2ce_name + "_" + "me"] =
+            hazard_overlay[ra2ce_name + "_" + "fr"] = 1  # hard coded for CLARION
+            hazard_overlay.rename(columns={self.hazard_field_name : ra2ce_name + "_" + "me"}, inplace=True)
+
 
         if hazard_overlay.crs != gdf_crs_original:
             hazard_overlay = hazard_overlay.to_crs(gdf_crs_original)
