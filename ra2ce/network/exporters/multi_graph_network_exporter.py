@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,9 +26,6 @@ from typing import Optional
 
 from geopandas import GeoDataFrame
 
-from ra2ce.network.exporters.geodataframe_network_exporter import (
-    GeoDataFrameNetworkExporter,
-)
 from ra2ce.network.exporters.network_exporter_base import (
     MULTIGRAPH_TYPE,
     NetworkExporterBase,

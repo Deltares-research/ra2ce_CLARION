@@ -3,7 +3,7 @@
                   Version 3, 29 June 2007
 
 Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-Copyright (C) 2023 Stichting Deltares
+Copyright (C) 2023-2026 Stichting Deltares
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,18 +34,10 @@ class AnalysisConfigDataProtocol(Protocol):
     save_gpkg: bool
     save_csv: bool
 
-
-@runtime_checkable
-class AnalysisConfigDataWithIntegrityValidationProtocol(
-    AnalysisConfigDataProtocol, Protocol
-):
-    """
-    Extension of the protocol AnalysisConfigDataProtocol with integrity validation method.
-    """
-
     def validate_integrity(self) -> ValidationReport:
         """
-        Validates the integrity of the config data instance.
+        Validates the integrity of the config data instance. This includes checking for required fields,
+        valid value ranges, and consistency between related fields.
 
         Returns:
             ValidationReport: The validation report containing the results of the integrity check.

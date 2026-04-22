@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -71,6 +71,11 @@ def read_origin_destination_files(
     origins = gpd.GeoDataFrame(columns=["o_id", "geometry"], crs=crs)
 
     origins_in = gpd.read_file(origins_path, crs=crs, engine="pyogrio")
+    # Check geometry types
+    if not (origins_in.geometry.geom_type == "Point").all():
+        bad_types = origins_in.geometry.geom_type.unique()
+        raise ValueError(f"All geometries must be of type Point. Found: {bad_types}")
+
     if regions_path:
         regions = gpd.read_file(regions_path, engine="pyogrio")
         regions = regions[[region_var, "geometry"]]
@@ -88,6 +93,12 @@ def read_origin_destination_files(
     destinations = gpd.GeoDataFrame(columns=["d_id", "geometry"], crs=crs)
 
     destinations_in = gpd.read_file(destinations_path, crs=crs, engine="pyogrio")
+
+    # Check geometry types
+    if not (destinations_in.geometry.geom_type == "Point").all():
+        bad_types = destinations_in.geometry.geom_type.unique()
+        raise ValueError(f"All geometries must be of type Point. Found: {bad_types}")
+
     destinations["d_id"] = "D_" + destinations_in.index.astype(str)
     destinations["geometry"] = destinations_in["geometry"]
 
@@ -159,7 +170,7 @@ def update_edges_with_new_node(
     cnt = 0
 
     if Point(graph.nodes[node_a]["geometry"].coords[0]).equals_exact(
-            Point(line_b.coords[-1]), tolerance=1e-6
+        Point(line_b.coords[-1]), tolerance=1e-6
     ):
         if node_a == node_b and graph.has_edge(*(node_a, new_node_id, 0)):
             if line_b != graph.edges[(node_a, new_node_id, 0)]["geometry"]:
@@ -185,7 +196,7 @@ def update_edges_with_new_node(
         cnt += 1
 
     if Point(graph.nodes[node_b]["geometry"].coords[0]).equals_exact(
-            Point(line_b.coords[0]), tolerance=1e-6
+        Point(line_b.coords[0]), tolerance=1e-6
     ):
         if node_a == node_b and graph.has_edge(*(node_a, new_node_id, 0)):
             if line_b != graph.edges[(node_a, new_node_id, 0)]["geometry"]:
@@ -213,7 +224,7 @@ def update_edges_with_new_node(
         cnt += 1
 
     if Point(graph.nodes[node_a]["geometry"].coords[0]).equals_exact(
-            Point(line_b.coords[0]), tolerance=1e-6
+        Point(line_b.coords[0]), tolerance=1e-6
     ):
         if node_a == node_b and graph.has_edge(*(node_a, new_node_id, 0)):
             if line_b != graph.edges[(node_a, new_node_id, 0)]["geometry"]:
@@ -239,7 +250,7 @@ def update_edges_with_new_node(
         cnt += 1
 
     if Point(graph.nodes[node_b]["geometry"].coords[0]).equals_exact(
-            Point(line_b.coords[-1]), tolerance=1e-6
+        Point(line_b.coords[-1]), tolerance=1e-6
     ):
         if node_a == node_b and graph.has_edge(*(node_a, new_node_id, 0)):
             if line_b != graph.edges[(node_a, new_node_id, 0)]["geometry"]:
@@ -349,7 +360,7 @@ def update_edges_with_new_node(
         cnt += 1
 
     if Point(graph.nodes[node_a]["geometry"].coords[0]).equals_exact(
-            Point(line_a.coords[0]), tolerance=1e-6
+        Point(line_a.coords[0]), tolerance=1e-6
     ):
         if node_a == node_b and graph.has_edge(*(node_a, new_node_id, 0)):
             if line_a != graph.edges[(node_a, new_node_id, 0)]["geometry"]:

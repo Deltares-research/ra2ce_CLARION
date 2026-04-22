@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -226,7 +226,7 @@ class DamageNetworkReturnPeriods(DamageNetworkBase):
         df = df.sort_index(axis="columns")
         values = df.values
         frequencies = df.columns
-        return np.trapz(values, frequencies, axis=1)
+        return np.trapezoid(values, frequencies, axis=1)
 
     @staticmethod
     def rework_damage_data_default(to_integrate: pd.DataFrame) -> pd.DataFrame:

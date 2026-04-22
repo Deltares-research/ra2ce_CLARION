@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -97,9 +97,23 @@ class AdaptationOptionPartialResult:
                     self.data_frame.drop(columns=[_col], inplace=True)
 
         # Merge the dataframes on the key column
-        self.data_frame = self.data_frame.merge(
+        _merged = self.data_frame.merge(
             other.data_frame, on=self._key_col, how="outer"
         ).fillna(math.nan)
+
+        # Restore the original order based on the dataframe with the most rows
+        if self.data_frame.shape[1] >= other.data_frame.shape[1]:
+            self.data_frame = (
+                _merged.set_index(self._key_col)
+                .reindex(self.data_frame[self._key_col])
+                .reset_index()
+            )
+        else:
+            self.data_frame = (
+                _merged.set_index(self._key_col)
+                .reindex(other.data_frame[self._key_col])
+                .reset_index()
+            )
 
         return self
 

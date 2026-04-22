@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 import geopandas as gpd
 import networkx as nx
@@ -108,7 +107,7 @@ def graph_to_gdf(
     node_geometry: bool,
     fill_edge_geometry: bool,
 ) -> GeoDataFrame:
-    _, _, data = zip(*graph.edges(data=True))
+
     graph_gdf = graph_to_gdfs(
         graph,
         nodes=nodes,
@@ -116,6 +115,8 @@ def graph_to_gdf(
         node_geometry=node_geometry,
         fill_edge_geometry=fill_edge_geometry,
     )
+
+    _, _, data = zip(*graph.edges(data=True))
     graph_gdf["data"] = data
     return graph_gdf
 

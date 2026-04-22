@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ from typing import Any
 import geopandas as gpd
 import momepy
 import networkx as nx
-import pandas as pd
 import pyproj
 from shapely.geometry import Point
 from tqdm import tqdm
@@ -128,7 +127,7 @@ class VectorNetworkWrapper(NetworkWrapperProtocol):
         ).assign()
 
         logging.info("Start converting the graph to a geodataframe")
-        edges_complex, _ = nut.graph_to_gdf(graph_complex)
+        edges_complex = nut.graph_to_gdf(graph_complex)[0]
         logging.info("Finished converting the graph to a geodataframe")
 
         # Segment the complex graph

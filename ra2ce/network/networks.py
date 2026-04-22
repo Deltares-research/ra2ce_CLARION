@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -154,8 +154,8 @@ class Network:
         ):
             # If all required attributes are present, return the original graph
             return graph
-        graph = nut.add_x_y_to_nodes(graph)
-        _, gdf_edges = osmnx.graph_to_gdfs(graph)
+
+        gdf_edges = nut.graph_to_gdf(graph)[0]
         updated_graph = copy.deepcopy(graph)
         for attribute in attributes:
             if attribute in gdf_edges.columns:

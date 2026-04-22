@@ -3,7 +3,7 @@
                       Version 3, 29 June 2007
 
     Risk Assessment and Adaptation for Critical Infrastructure (RA2CE).
-    Copyright (C) 2023 Stichting Deltares
+    Copyright (C) 2023-2026 Stichting Deltares
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1094,10 +1094,13 @@ def add_x_y_to_nodes(graph: nx.Graph) -> nx.Graph:
     """
     for _, data in graph.nodes(data=True):
         if "x" not in data or "y" not in data:
-            # Use 'geometry' or provide default values if it's not present
-            geometry = data.get("geometry", (0.0, 0.0))
-            data.setdefault("x", round(geometry.x, 7))
-            data.setdefault("y", round(geometry.y, 7))
+            geometry = data.get("geometry", None)
+            if geometry is not None and hasattr(geometry, "x"):
+                data.setdefault("x", round(geometry.x, 7))
+                data.setdefault("y", round(geometry.y, 7))
+            else:
+                data.setdefault("x", 0.0)
+                data.setdefault("y", 0.0)
     return graph
 
 
@@ -1135,7 +1138,8 @@ def graph_to_gdf(
     save_nodes: bool = False,
     save_edges: bool = True,
     to_save: bool = False,
-):
+    node_geometry: bool = False,
+) -> tuple[gpd.GeoDataFrame | None, gpd.GeoDataFrame | None]:
     """Takes in a networkx graph object and returns edges and nodes as geodataframes
 
     Arguments:
@@ -1148,11 +1152,16 @@ def graph_to_gdf(
         edges (GeoDataFrame): contains the edges
         nodes (GeoDataFrame): contains the nodes
     """
+    # Add x and y to nodes if not present
+    graph_to_convert = add_x_y_to_nodes(graph_to_convert)
 
     nodes, edges = None, None
     if save_nodes and save_edges:
         nodes, edges = graph_to_gdfs(
-            graph_to_convert, nodes=save_nodes, edges=save_edges, node_geometry=False
+            graph_to_convert,
+            nodes=save_nodes,
+            edges=save_edges,
+            node_geometry=node_geometry,
         )
         if to_save:
             for df in [edges, nodes]:
@@ -1187,7 +1196,7 @@ def get_nodes_and_edges_from_origin_graph(
         origin_graph = nx.MultiGraph(origin_graph)
 
     # The nodes should have a geometry attribute (perhaps on top of the x and y attributes)
-    _nodes, _edges = graph_to_gdfs(origin_graph, node_geometry=False)
+    _edges, _nodes = graph_to_gdf(origin_graph, save_nodes=True)
 
     dfs = [_edges, _nodes]
     for df in dfs:
