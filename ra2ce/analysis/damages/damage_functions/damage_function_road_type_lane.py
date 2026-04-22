@@ -100,7 +100,6 @@ class DamageFunctionByRoadTypeByLane:
         cols = df.columns
         assert "road_type" in cols, "no column 'road type' in df"
         assert "lanes" in cols, "no column 'lanes in df"
-
         max_damage_data = self.max_damage.data
 
         def _get_damage(row):
