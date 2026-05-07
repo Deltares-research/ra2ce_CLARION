@@ -30,6 +30,8 @@ git fetch upstream 806-bughazard-overlay-with-a-csv-table
 Push the branch to forked repo
 git push origin FETCH_HEAD:refs/heads/806-bughazard-overlay-with-a-csv-table
 
+Modify the ra2ce version in the pyproject.toml (version = "1.0.2" - > version = "1.0.3"). So that mhrm can detect new changes during `poetry install`
+
 
 ## RA2CE General
 
