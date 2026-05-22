@@ -67,7 +67,7 @@ class HazardIntersectBuilderForTable(HazardIntersectBuilderBase):
 
     def _join_table(self, graph: Graph, hazard: str) -> Graph:
         df = read_csv(hazard)
-        self.network_file_id = 'rfid_c'
+        self.network_file_id = 'rfid'
         df = df[[self.hazard_field_name, self.hazard_id]]
         df = df.drop_duplicates(subset=self.hazard_id)
 
