@@ -57,35 +57,16 @@ class Damages(AnalysisBase, AnalysisDamagesProtocol):
                 self.input_path.joinpath("damage_functions")
             )
 
-    def execute(self) -> AnalysisResultWrapper:
-        def _rename_road_gdf_to_conventions(road_gdf_columns: list[str]) -> list[str]:
-            """
-            Rename the columns in the road_gdf to the conventions of the ra2ce documentation
+    def execute(self, hazard_events = None) -> AnalysisResultWrapper:
 
-            'eg' RP100_fr -> F_RP100_me
-                        -> F_EV1_mi
 
-            """
-            cs = road_gdf_columns
-            ### Handle return period columns
-            new_cols = []
-            for c in cs:
-                if c.startswith("RP") or c.startswith("EV"):
-                    new_cols.append(f"{hazard_prefix}_" + c)
-                else:
-                    new_cols.append(c)
-
-            ### Todo add handling of events if this gives a problem
-            return new_cols
-
-        hazard_prefix = "F"
+        hazard_prefix = "EV"
         # Open the network with hazard data
         road_gdf = self.graph_file_hazard.get_graph()
-        road_gdf.columns = _rename_road_gdf_to_conventions(road_gdf.columns)
 
         # Find the hazard columns; these may be events or return periods
         val_cols = [
-            col for col in road_gdf.columns if f"{hazard_prefix}" in col.split("_")
+            col for col in road_gdf.columns if f"{hazard_prefix}" in col
         ]
 
         # Read the desired damage function
@@ -120,6 +101,7 @@ class Damages(AnalysisBase, AnalysisDamagesProtocol):
                         self.analysis.damage_curve,
                         mode=self.analysis.risk_calculation_mode,
                         year=self.analysis.risk_calculation_year,
+                        hazard_events=hazard_events  # TODO 99
                     )
 
             else:

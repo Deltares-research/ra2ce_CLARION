@@ -46,7 +46,7 @@ class DamageNetworkEvents(DamageNetworkBase):
     ):
         # Construct using the parent class __init__
         super().__init__(road_gdf, val_cols, representative_damage_percentage)
-        self.events = set([x.split("_")[1] for x in val_cols])  # set of unique events
+        self.events = set([x.split("_")[0] for x in val_cols])  # set of unique events
 
         if not any(self.events):
             raise ValueError("No event cols present in hazard data")

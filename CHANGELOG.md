@@ -1,3 +1,6 @@
+## 1.0.6
+Changes in damages event and EAD with the new hazard column names.
+
 ## 1.0.5
 for EAD, roll back to np.trapz(values, frequencies, axis=1) (numpy <2.0.0)
 

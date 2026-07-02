@@ -112,7 +112,6 @@ class DamageFunctionByRoadTypeByLane:
         self,
         df: pd.DataFrame,
         damage_function_prefix: str,
-        hazard_prefix: str,
         event_prefix: str,
     ) -> pd.DataFrame:
         """
@@ -121,7 +120,6 @@ class DamageFunctionByRoadTypeByLane:
         Args:
             df (pd.DataFrame): dataframe with road network data.
             damage_function_prefix (str): prefix to identify the right damage function e.g. 'A'.
-            hazard_prefix (str): prefix to identify the right hazard e.g. 'F'.
             event_prefix (str): prefix to identify the right event, e.g. 'EV1'
 
         Returns:
@@ -135,12 +133,8 @@ class DamageFunctionByRoadTypeByLane:
         # Find correct columns in dataframe
         result_col = "dam_{}_{}".format(event_prefix, damage_function_prefix)
         max_dam_col = "{}_temp_max_dam".format(damage_function_prefix)
-        hazard_severity_col = "{}_{}_me".format(
-            hazard_prefix, event_prefix
-        )  # mean is hardcoded now
-        hazard_fraction_col = "{}_{}_fr".format(
-            hazard_prefix, event_prefix
-        )  # fraction column is hardcoded
+        hazard_severity_col = "{}_me".format( event_prefix)  # mean is hardcoded now
+        hazard_fraction_col = "{}_fr".format(event_prefix)  # fraction column is hardcoded
 
         df[result_col] = round(
             df[max_dam_col].astype(float)  # max damage (euro/m)

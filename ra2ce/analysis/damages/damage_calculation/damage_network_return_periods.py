@@ -105,6 +105,7 @@ class DamageNetworkReturnPeriods(DamageNetworkBase):
         damage_function: DamageCurveEnum,
         mode: RiskCalculationModeEnum,
         year: int,
+        hazard_events: list,  # TODO 99
     ):
         """
         Controller for the risk calculation, which calls the appropriate risk (integration) functions.
@@ -114,6 +115,7 @@ class DamageNetworkReturnPeriods(DamageNetworkBase):
             mode: The type of risk calculation to perform. Can be 'default',
                 'cut_from_YYYY_year', or 'triangle_to_null_YYYY_year'.
             year: The cutoff year or return period of the risk calculation.
+            hazard_events: list of HazardEvent object from MHRM, used to retrieved the RP from the event id
 
         Returns:
             None
@@ -124,7 +126,7 @@ class DamageNetworkReturnPeriods(DamageNetworkBase):
         to_integrate_shaper = ToIntegrateShaperFactory.get_shaper(
             gdf=self.gdf, damage_function=damage_function
         )
-        return_periods = to_integrate_shaper.get_return_periods()
+        return_periods = sorted([1/haz.event_probability for haz in hazard_events])
         _to_integrate_dict = to_integrate_shaper.shape_to_integrate_object(
             return_periods=return_periods
         )
