@@ -1,3 +1,6 @@
+## 1.0.7
+Apply changes to the damages per link wrapper
+
 ## 1.0.6
 Changes in damages event and EAD with the new hazard column names.
 

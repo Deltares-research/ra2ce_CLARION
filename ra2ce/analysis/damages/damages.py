@@ -216,13 +216,7 @@ class Damages(AnalysisBase, AnalysisDamagesProtocol):
         damage_curve = self.analysis.damage_curve
         segment_id_column = "rfid_c"
 
-        # Find the hazard columns; these may be events or return periods
-        event_cols = [
-            col
-            for col in result_segment_based.columns
-            if (col[0].isupper() and col[1] == "_")
-        ]
-        events = set([x.split("_")[1] for x in event_cols])  # set of unique events
+        events = [col.split('_')[0] for col in result_segment_based.columns if f"EV" in col and "dam" not in col]
 
         # Step 0: create a deep copy of the base_graph_hazard to compose further as the final outcome of this process
         damages_link_based_graph = base_graph_hazard.copy()
