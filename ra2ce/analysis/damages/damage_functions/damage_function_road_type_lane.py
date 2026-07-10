@@ -152,11 +152,16 @@ class DamageFunctionByRoadTypeByLane:
         self,
         df: pd.DataFrame,
         damage_function_prefix: str,
-        hazard_prefix: str,
         event_prefix: str,
         asset_type: Optional[str] = None,   # <-- NEW PARAM
     ) -> pd.DataFrame:
         """
+        Calculates the damage for one event. The prefixes are used to find/set the right df columns.
+
+        Args:
+            df (pd.DataFrame): dataframe with road network data.
+            damage_function_prefix (str): prefix to identify the right damage function e.g. 'A'.
+            event_prefix (str): prefix to identify the right event, e.g. 'EV1'
         Calculates the damage for one event, but only for rows that match the asset filter:
           - If `asset_type` ∈ {"bridge", "viaduct", "tunnel"}: only rows with that `infra_type`.
           - Else (asset_type is None or other like 'standard'): only rows whose `infra_type`
@@ -168,8 +173,9 @@ class DamageFunctionByRoadTypeByLane:
 
         result_col = f"dam_{event_prefix}_{damage_function_prefix}"
         max_dam_col = f"{damage_function_prefix}_temp_max_dam"
-        hazard_severity_col = f"{hazard_prefix}_{event_prefix}_me"  # mean
-        hazard_fraction_col = f"{hazard_prefix}_{event_prefix}_fr"  # fraction
+        hazard_severity_col = f"{event_prefix}_me"  # mean
+        hazard_fraction_col = f"{event_prefix}_fr"  # fraction
+        # max_dam_col = "{}_temp_max_dam".format(damage_function_prefix)
 
         infra = df["infra_type"].astype(str).str.lower()
         current = (asset_type or "").strip().lower()

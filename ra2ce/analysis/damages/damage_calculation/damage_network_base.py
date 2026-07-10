@@ -196,8 +196,8 @@ class DamageNetworkBase(ABC):
             events (list[str]): list of events (or return periods) to iterate over, these should match the hazard column names
             manual_damage_functions (ManualDamageFunctions): The manual damage functions object
         """
-        # Todo: Dirty fixes, these should be read from the init
-        hazard_prefix = "F"
+        # # Todo: Dirty fixes, these should be read from the init
+        # hazard_prefix = "F"
 
         # dataframe to carry out the damage calculation #todo: this is a bit dirty
         df = self._gdf_mask
@@ -214,7 +214,7 @@ class DamageNetworkBase(ABC):
                 df = _damage_func.calculate_damage(
                     df=df,
                     damage_function_prefix=_damage_func.prefix,
-                    hazard_prefix=hazard_prefix,
+                    # hazard_prefix=hazard_prefix,
                     event_prefix=event,
                     asset_type=asset_type,
                 )
@@ -237,6 +237,10 @@ class DamageNetworkBase(ABC):
         # Only transfer the final results to the damage column
         dam_cols = [c for c in df.columns if c.startswith("dam_")]
         self.gdf[dam_cols] = df[dam_cols]
+
+        dam_cols = [c for c in self.gdf.columns if c.startswith("dam_")] #TODO 99
+        self.gdf.loc[:, dam_cols] = self.gdf.loc[:, dam_cols].fillna(0) #TODO 99
+
         logging.info(
             "Damage calculation with the manual damage functions was successful."
         )
