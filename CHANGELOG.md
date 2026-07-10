@@ -1,3 +1,6 @@
+## 1.0.8
+Include asset damages from SITO-IS project
+
 ## 1.0.7
 Apply changes to the damages per link wrapper
 
