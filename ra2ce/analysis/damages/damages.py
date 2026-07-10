@@ -232,21 +232,18 @@ class Damages(AnalysisBase, AnalysisDamagesProtocol):
         self.road_gdf = df
 
     def execute(self, hazard_events = None) -> AnalysisResultWrapper:
-        hazard_prefix = "EV"
         # Open the network with hazard data
-        road_gdf = self.graph_file_hazard.get_graph()
-
-        # Find the hazard columns; these may be events or return periods
-        val_cols = [
-            col for col in road_gdf.columns if f"{hazard_prefix}" in col
-        ]
         self._prepare_road_gdf()
 
         if self.analysis.analysis == AnalysisDamagesEnum.DAMAGES_WITH_ASSETS:
             self._rename_highway_by_assets()
 
         road_gdf = self.road_gdf
-        val_cols = self.hazard_columns
+        hazard_prefix = "EV"
+
+        val_cols = [
+            col for col in road_gdf.columns if f"{hazard_prefix}" in col
+        ]
 
         # Read the desired damage function
         damage_function = self.analysis.damage_curve
