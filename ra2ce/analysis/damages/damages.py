@@ -63,7 +63,6 @@ class Damages(AnalysisBase, AnalysisDamagesProtocol):
         self,
         analysis_input: AnalysisInputWrapper,
         base_graph_hazard: MultiGraph,
-        hazard_prefix: str = "F",
     ) -> None:
         self.allowed_asset_types: set[str] = set(CANONICAL_ASSET_TYPES)
 
@@ -74,7 +73,6 @@ class Damages(AnalysisBase, AnalysisDamagesProtocol):
         self.output_path = analysis_input.output_path
         self.reference_base_graph_hazard = base_graph_hazard
 
-        self.hazard_prefix = hazard_prefix
         if self.analysis.damage_curve == DamageCurveEnum.MAN:
             self.manual_damage_functions = self._load_manual_damage_functions()
 
@@ -85,32 +83,8 @@ class Damages(AnalysisBase, AnalysisDamagesProtocol):
         """
         road_gdf = self.graph_file_hazard.get_graph()
 
-        # rename columns to RA2CE convention (e.g., RP100_fr -> F_RP100_fr, EV1_mi -> F_EV1_mi)
-        renamed_cols = self._rename_road_gdf_to_conventions(list(road_gdf.columns))
-        road_gdf.columns = renamed_cols
-
-        # identify hazard value columns (those starting with e.g. 'F_')
-        hazard_tag = f"{self.hazard_prefix}_"
-        hazard_cols = [c for c in road_gdf.columns if c.startswith(hazard_tag)]
-
         self.road_gdf = road_gdf
-        self.hazard_columns = hazard_cols
 
-    def _rename_road_gdf_to_conventions(self, road_gdf_columns: list[str]) -> list[str]:
-        """
-        Rename columns in the road_gdf to RA2CE conventions:
-
-        e.g.
-            RP100_fr -> F_RP100_fr
-            EV1_mi   -> F_EV1_mi
-        """
-        new_cols: list[str] = []
-        for c in road_gdf_columns:
-            if c.startswith("RP") or c.startswith("EV"):
-                new_cols.append(f"{self.hazard_prefix}_" + c)
-            else:
-                new_cols.append(c)
-        return new_cols
 
     @staticmethod
     def _to_canonical_asset(
