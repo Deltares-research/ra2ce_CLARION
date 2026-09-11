@@ -1,3 +1,6 @@
+## 1.0.10
+update: xarray = ">=2022.6.0"
+
 ## 1.0.9
 Adjutement to the merge from 1.0.8
 
