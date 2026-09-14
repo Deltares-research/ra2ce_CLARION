@@ -373,28 +373,6 @@ class HazardOverlay:
 
         # Check if the graph needs to be reprojected
         _hazard_crs = pyproj.CRS.from_user_input(self._hazard_crs)
-        _graph_crs = pyproj.CRS.from_user_input(
-            "EPSG:4326"
-        )  # this is WGS84, TODO: Make flexible by including in the network ini
-
-        if _hazard_crs != _graph_crs:
-            # Temporarily reproject the graph to the CRS of the hazard
-            logging.warning(
-                """Hazard crs %s and graph crs %s are inconsistent, we try to reproject the graph crs""",
-                _hazard_crs,
-                _graph_crs,
-            )
-            _graph_reprojected = self.get_reproject_graph(
-                base_graph, _graph_crs, _hazard_crs
-            )
-
-            # Do the actual hazard intersect
-            _base_graph_hazard_reprojected = self.hazard_intersect(_graph_reprojected)
-
-            # Assign the original geometries to the reprojected raster
-            return self.get_original_geoms_graph(
-                base_graph, _base_graph_hazard_reprojected
-            )
 
         return self.hazard_intersect(base_graph)
 
@@ -405,43 +383,8 @@ class HazardOverlay:
 
         # Check if the graph needs to be reprojected
         _hazard_crs = pyproj.CRS.from_user_input(self._hazard_crs)
-        _graph_crs = pyproj.CRS.from_user_input(
-            "EPSG:4326"
-        )  # this is WGS84, TODO: Make flexible by including in the network ini
 
-        if (
-            _hazard_crs != _graph_crs
-        ):  # Temporarily reproject the graph to the CRS of the hazard
-            logging.warning(
-                """Hazard crs %s and graph crs %s are inconsistent, we try to reproject the graph crs""",
-                _hazard_crs,
-                _graph_crs,
-            )
-            if _hazard_crs != _ods.crs:
-                logging.warning(
-                    """Hazard crs %s and OD crs %s are inconsistent, we try to reproject the graph crs""",
-                    _hazard_crs,
-                    _ods.crs,
-                )
-                _ods_reprojected = _ods.to_crs(_hazard_crs)
-
-            _graph_reprojected = self.get_reproject_graph(
-                origins_destinations_graph, _graph_crs, _hazard_crs
-            )
-
-            # Do the actual hazard intersect
-            (
-                _od_graph_hazard_reprojected,
-                _ods_hazard_reprojected,
-            ) = self.od_hazard_intersect(_graph_reprojected, _ods_reprojected)
-
-            # Assign the original geometries to the reprojected dataset
-            _graph_hazard = self.get_original_geoms_graph(
-                origins_destinations_graph, _od_graph_hazard_reprojected
-            )
-            _ods = _ods_hazard_reprojected.to_crs(_ods.crs)
-        else:
-            (
+        (
                 _graph_hazard,
                 _ods,
             ) = self.od_hazard_intersect(origins_destinations_graph, _ods)

@@ -1,3 +1,6 @@
+## 1.0.11
+Remove hadrcoded EPSG 4326 in hazard overlay
+
 ## 1.0.10
 update: xarray = ">=2022.6.0"
 
